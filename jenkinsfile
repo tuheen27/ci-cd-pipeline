@@ -1,27 +1,48 @@
 pipeline {
-                agent any
-                stages {
-                                stage{
-                                                (checkout codefrom github){
-steps{
-                git  branch: 'main', url: 'https://github.com/tuheen27/Dev-Ops-security-playground.git'
-}
-                                                }
-                                }
-                                stage(build the application){
-                                                stpps{
-                                                                sh '''
-                                                                pip install -r requirements.txt
-                                                                pip install 
-                                                                '''
-                                                }
-                                }
+    agent any
 
-                }
-}
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo "🔹 Checking out code from GitHub..."
+                git branch: 'main', url: 'https://github.com/tuheen27/ci-cd-pipeline.git'
+            }
+        }
 
-post{
-                alawyays{
-                                echo 'this is simple  pipeline to learn the jenkins file syntax' 
-                }
+        stage('Build Application') {
+            steps {
+                echo "🔹 Building the application..."
+                sh 'echo Build successful!'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo "🔹 Running tests..."
+                sh '''
+                    echo "Test 1: Checking Python version"
+                    python3 --version
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "🔹 Deploying application..."
+                sh 'echo Deployment complete!'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "ℹ️ Pipeline execution completed."
+        }
+        success {
+            echo "✅ Build succeeded!"
+        }
+        failure {
+            echo "❌ Build failed."
+        }
+    }
 }

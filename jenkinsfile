@@ -1,27 +1,51 @@
 pipeline {
-                agent any
-                stages {
-                                stage{
-                                                (checkout codefrom github){
-steps{
-                git  branch: 'main', url: 'https://github.com/tuheen27/Dev-Ops-security-playground.git'
-}
-                                                }
-                                }
-                                stage(build the application){
-                                                stpps{
-                                                                sh '''
-                                                                pip install -r requirements.txt
-                                                                pip install 
-                                                                '''
-                                                }
-                                }
+    agent any
 
-                }
-}
+    stages {
+        stage('Checkout Code from GitHub') {
+            steps {
+                echo "Cloning repository..."
+                git branch: 'main', url: 'https://github.com/tuheen27/Dev-Ops-security-playground.git'
+            }
+        }
 
-post{
-                alawyays{
-                                echo 'this is simple  pipeline to learn the jenkins file syntax' 
-                }
+        stage('Build the Application') {
+            steps {
+                echo "Installing dependencies..."
+                sh '''
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Basic Tests') {
+            steps {
+                echo "Running basic test cases..."
+                // Run a few example tests
+                sh '''
+                    echo "Test 1: Checking Python version"
+                    python3 --version
+
+                    echo "Test 2: Checking required files exist"
+                    test -f requirements.txt && echo "requirements.txt found"
+
+                    echo "Test 3: Checking syntax errors (lint)"
+                    python3 -m py_compile $(find . -name "*.py")
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo '✅ This is a simple pipeline to learn Jenkinsfile syntax.'
+        }
+        success {
+            echo '🎉 Pipeline executed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed! Please check logs.'
+        }
+    }
 }
